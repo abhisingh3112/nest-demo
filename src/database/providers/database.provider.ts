@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize-typescript';
 import * as dotenv from "dotenv";
-import { User } from 'src/models/user.model';
+import { User } from 'src/database/models/user.model';
 dotenv.config();
 
 const options: any ={

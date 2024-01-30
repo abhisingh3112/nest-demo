@@ -10,7 +10,7 @@ export class User extends Model {
   @Column({ primaryKey: true, autoIncrement: true })
   id: number;
 
-  @Column({unique:true})
+  @Column
   email: string;
 
   @Column
@@ -21,4 +21,13 @@ export class User extends Model {
 
   @Column
   phoneNumber: number;
+
+  @Column
+  createdAt: Date;
+
+  @Column
+  updatedAt: Date;
+
+  @Column
+  deletedAt: Date
 }
