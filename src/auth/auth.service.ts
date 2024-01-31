@@ -15,12 +15,12 @@ export class AuthService {
       return false;
     }
 
-    const payload = this.jwt.decode<{ sub: string }>(refreshToken);
-    return payload.sub === data.userId;
+    const payload = this.jwt.decode<{ id: number }>(refreshToken);
+    return payload.id === data.id;
   }
 
   public jwtSign(data: Payload): JwtSign {
-    const payload: JwtPayload = { id: data.userId, phoneNumber: data.phoneNumber };
+    const payload: JwtPayload = { id: data.id, phoneNumber: data.phoneNumber };
 
     return {
       access_token: this.jwt.sign(payload),
@@ -35,14 +35,14 @@ export class AuthService {
         return null;
       }
 
-      return { userId: payload.id, phoneNumber: payload.phoneNumber };
+      return payload;
     } catch {
       // Unexpected token i in JSON at position XX
       return null;
     }
   }
 
-  private getRefreshToken(id: string): string {
+  private getRefreshToken(id: number): string {
     return this.jwt.sign(
       { id },
       {

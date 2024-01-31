@@ -4,11 +4,11 @@ export interface JwtSign {
 }
 
 export interface JwtPayload {
-  id: string;
+  id: number;
   phoneNumber: number;
 }
 
 export interface Payload {
-  userId?: string;
+  id?: number;
   phoneNumber?: number;
 }

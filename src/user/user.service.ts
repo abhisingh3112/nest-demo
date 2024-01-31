@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { AuthService } from 'src/auth/auth.service';
 import { User } from 'src/database/models/user.model';
 import { UserRepository } from 'src/database/repositories/user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(public userRepo: UserRepository) {}
+  constructor(public userRepo: UserRepository, private authService: AuthService) {}
 
   // public async validatePhoneNumber(phoneNumber: number) {
   //   if(!phoneNumber) return;
@@ -17,8 +18,26 @@ export class UserService {
   //   }
   // }
   async createUser(profile: Partial<User>) {
-    // await this.validatePhoneNumber(profile.phoneNumber);
-    const user = await this.userRepo.create(profile);
-    return user;
+    let user = await this.userRepo.findOne({ where: { phoneNumber: String(profile.phoneNumber) } });
+    console.log('user',user)
+    //send OTP
+    if(!user) {
+      return this.userRepo.create(profile);
+    }
+    return {};
+  }
+
+  async verifyOtp(verify: {otp: number,phoneNumber: number}) {
+    let user = await this.userRepo.findOne({ where: { phoneNumber: String(verify.phoneNumber) } });
+    console.log('verify',user)
+    if(!user) {
+      throw new NotFoundException('Invalid phone number')
+    }
+    if(verify.otp != 1234) {
+      throw new UnauthorizedException('Invalid otp')
+    }
+    //send OTP
+    
+    return {...user.dataValues, ...this.authService.jwtSign(user.dataValues)};
   }
 }
